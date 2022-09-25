@@ -1,20 +1,20 @@
-import { Either, readLines, run, Stream } from "../deps.ts";
+import { Monet, readLines, run, Stream } from "../deps.ts";
 
 const intoLines = (
 	lines: Promise<ReadableStreamDefaultReader<Uint8Array>>,
-): Promise<Either<unknown, AsyncIterableIterator<string>>> => lines.then(Stream.readerFromStreamReader)
+): Promise<Monet.Either<unknown, AsyncIterableIterator<string>>> => lines.then(Stream.readerFromStreamReader)
 	.then(readLines)
-	.then((lines) => Either.right(lines))
-	.catch((e) => Either.left(e));
+	.then((lines) => Monet.Either.right(lines))
+	.catch((e) => Monet.Either.left(e));
 
-export const openLinesFromFile = (name: string): Promise<Either<unknown, AsyncIterableIterator<string>>> =>
+export const openLinesFromFile = (name: string): Promise<Monet.Either<unknown, AsyncIterableIterator<string>>> =>
 	intoLines(
 		Deno
 			.open(name)
 			.then((f) => f.readable.getReader()),
 	);
 
-export const openLinesFromURL = (url: string): Promise<Either<unknown, AsyncIterableIterator<string>>> =>
+export const openLinesFromURL = (url: string): Promise<Monet.Either<unknown, AsyncIterableIterator<string>>> =>
 	intoLines(
 		fetch(url)
 			.then((f) => f.body!.getReader()),
